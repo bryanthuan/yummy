@@ -32,3 +32,13 @@ exports.editStore = async (req, res) => {
   // 3. Render out the edit form so the suer can update their store.
     res.render('editStore', { title: `Edit ${store.name}`, store })
 }
+
+exports.updateStore = async (req, res) => {
+  // const body = _.pick(req.body, ['name', 'description','tags']);
+  const store = await Store.findByIdAndUpdate({_id: req.params.id},req.body, {
+    new: true,
+    runValidators: true
+  }).exec();
+  req.flash('success', `Successfully updated <strong> ${store.name} </strong>. <a href="/store/${store.slug}"> View Store -> </a>`);
+  res.redirect(`/stores/${store._id}/edit`);
+}
