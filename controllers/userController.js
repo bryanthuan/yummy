@@ -43,5 +43,25 @@ const register = async (req, res, next) => {
     next();
 }
 
-module.exports = { loginForm, registerForm, validateRegister, register }
+const account = (req, res) => {
+    res.render('auth/account', {title: 'Account'});
+}
+
+const updateAccount = async (req, res) => {
+    const updates = {
+        name: req.body.name,
+        email: req.body.email
+    };
+
+    const user = await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $set: updates },
+        { new: true, runValidations: true, context: 'query'}
+    );
+    req.flash('success', 'Your infor has been updated successfully !');
+    res.redirect('back');
+    // res.json(user);
+}
+
+module.exports = { loginForm, registerForm, validateRegister, register, account, updateAccount }
 

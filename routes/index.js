@@ -16,7 +16,9 @@ const {
     loginForm,
     registerForm,
     validateRegister,
-    register
+    register,
+    account,
+    updateAccount
  } = require('../controllers/userController');
 
 const { login, logout, isLoggedIn } = require('../controllers/authController');
@@ -60,5 +62,8 @@ router.post('/register',
 );
 
 router.get('/logout', logout);
+
+router.get('/account', isLoggedIn ,account);
+router.post('/account', catchErrors(updateAccount));
 
 module.exports = router;
