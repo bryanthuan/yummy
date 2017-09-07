@@ -20,7 +20,7 @@ That will populate 16 stores with 3 authors and 41 reviews. The logins for the a
 
 |Name|Email (login)|Password|
 |---|---|---|
-|Wes Bos|wes@example.com|wes|
+|Brian Thuan|thuann89@gmail.com|12345|
 |Debbie Downer|debbie@example.com|debbie|
 |Beau|beau@example.com|beau|
 
