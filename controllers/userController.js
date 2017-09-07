@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const promisify = require('es6-promisify');
 
-const loginForm = (req, res) => {
+exports.loginForm = (req, res) => {
     res.render('auth/login', { title: 'Login'});
 }
 
-const registerForm = (req, res) => {
+exports.registerForm = (req, res) => {
     res.render('auth/register', {title: 'Register'});
 }
 
-const validateRegister = (req, res, next) => {
+exports.validateRegister = (req, res, next) => {
     req.sanitizeBody('name');
     req.checkBody('name', 'You must supply a name!').notEmpty();
     req.checkBody('email','That is email is not valid!').isEmail();
@@ -33,7 +33,7 @@ const validateRegister = (req, res, next) => {
     next();
 };
 
-const register = async (req, res, next) => {
+exports.register = async (req, res, next) => {
     const user = new User({
         email: req.body.email,
         name: req.body.name
@@ -43,11 +43,11 @@ const register = async (req, res, next) => {
     next();
 }
 
-const account = (req, res) => {
+exports.account = (req, res) => {
     res.render('auth/account', {title: 'Account'});
 }
 
-const updateAccount = async (req, res) => {
+exports.updateAccount = async (req, res) => {
     const updates = {
         name: req.body.name,
         email: req.body.email
@@ -60,8 +60,4 @@ const updateAccount = async (req, res) => {
     );
     req.flash('success', 'Your infor has been updated successfully !');
     res.redirect('back');
-    // res.json(user);
 }
-
-module.exports = { loginForm, registerForm, validateRegister, register, account, updateAccount }
-

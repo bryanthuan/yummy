@@ -18,6 +18,13 @@ const multerOptions = {
 };
 
 
+const confirmOwner = (store, user) => {
+  if (!store.author.equals(user._id)) {
+    throw new Error('You cannot update store that you are not the owner');
+  }
+}
+
+
 exports.homePage = (req, res) => {
   res.render('index', {title: 'Home Page'});
 };
@@ -42,7 +49,7 @@ exports.resize = async (req, res, next) => {
 }
 
 exports.createStore = async (req, res) => {
-  // const body = _.pick(req.body, ['name', 'description','tags']);
+  req.body.author = req.user._id;
   const store = await (new Store(req.body)).save();   
   req.flash('success',`Successfully created ${store.name}. Care to leave a review ?`);
   res.redirect(`/store/${store.slug}`);
@@ -56,6 +63,7 @@ exports.getStores = async (req, res) => {
 exports.editStore = async (req, res) => {
   // 1. Find the tstore given the id
     const store = await Store.findOne({_id: req.params.id});
+    confirmOwner(store, req.user);
     // res.json(store);
   // 2. confirm they are the owner of the store
 
@@ -74,7 +82,7 @@ exports.updateStore = async (req, res) => {
 }
 
 exports.getStoreBySlug = async (req, res) => {
-  const store = await Store.findOne({slug: req.params.slug});
+  const store = await Store.findOne({slug: req.params.slug}).populate('author');
   if (!store) return next();
   res.render('store', { title: store.name, store });
 }
