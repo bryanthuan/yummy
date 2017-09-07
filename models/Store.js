@@ -64,6 +64,4 @@ storeSchema.statics.getTagsList = function() {
   ])
 }
 
-const Store = mongoose.model('Store', storeSchema);
-
-module.exports = { Store };
+module.exports = mongoose.model('Store', storeSchema);

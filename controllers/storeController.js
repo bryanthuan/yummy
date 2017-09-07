@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Store } = require('../models/Store');
+const Store = mongoose.model('Store');
 const multer = require('multer');
 const jimp = require('jimp');
 const uuid = require('uuid');
