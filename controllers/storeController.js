@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const _ = require('lodash');
 const { Store } = require('../models/Store');
 const multer = require('multer');
 const jimp = require('jimp');
@@ -78,4 +77,13 @@ exports.getStoreBySlug = async (req, res) => {
   const store = await Store.findOne({slug: req.params.slug});
   if (!store) return next();
   res.render('store', { title: store.name, store });
+}
+
+exports.getStoresByTag = async (req, res) => {
+  const tag = req.params.tag;
+  const tagQuery = tag || { $exists: true };
+  const tagsPromise = Store.getTagsList();
+  const storesPromise = Store.find({ tags: tagQuery})
+  const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+  res.render('tag',{ tags, tag, stores, title: 'Tags'});
 }

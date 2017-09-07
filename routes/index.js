@@ -8,8 +8,14 @@ const {
     updateStore,
     upload,
     resize,
-    getStoreBySlug
+    getStoreBySlug,
+    getStoresByTag
 } = require('../controllers/storeController');
+
+const { 
+    loginForm,
+    registerForm
+ } = require('../controllers/userController');
 
 const { catchErrors } = require('../handlers/errorHandlers');
 
@@ -32,5 +38,16 @@ router.post('/add/:id',
 );
 
 router.get('/store/:slug', catchErrors(getStoreBySlug))
+
+router.get('/tags',catchErrors(getStoresByTag));
+router.get('/tags/:tag',catchErrors(getStoresByTag));
+
+router.get('/login',loginForm);
+router.get('/register', registerForm);
+ 
+// 1. Validate the registeration data
+// 2. Register the user
+// 3. Login him in
+router.post('/register', registerForm);
 
 module.exports = router;
