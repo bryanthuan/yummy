@@ -9,7 +9,8 @@ const {
     upload,
     resize,
     getStoreBySlug,
-    getStoresByTag
+    getStoresByTag,
+    searchStores
 } = require('../controllers/storeController');
 
 const { 
@@ -80,5 +81,10 @@ router.post('/account/reset/:token',
     confirmPasswords,
     catchErrors(updatePassword)
 );
+
+/**
+ * API endpoint
+ */
+router.get('/api/v1', catchErrors(searchStores));
 
 module.exports = router;
