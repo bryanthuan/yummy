@@ -36,6 +36,8 @@ const {
     updatePassword
 } = require('../controllers/authController');
 
+const reviewController = require('../controllers/reviewController');
+
 const { catchErrors } = require('../handlers/errorHandlers');
 
 router.get('/', catchErrors(getStores));
@@ -87,6 +89,11 @@ router.post('/account/reset/:token',
 );
 
 router.get('/map', mapPage);
+
+router.get('/hearts', isLoggedIn, catchErrors(getHearts));
+
+router.post('/reviews/:id', isLoggedIn, catchErrors(reviewController.addReview));
+
 /**
  * API endpoint
  */
@@ -96,5 +103,5 @@ router.get('/api/stores/near',catchErrors(mapStores));
 
 router.post('/api/stores/:id/heart', catchErrors(heartStore));
 
-router.get('/hearts', isLoggedIn, catchErrors(getHearts));
 module.exports = router;
+
