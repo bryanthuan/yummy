@@ -3,6 +3,7 @@ const Store = mongoose.model('Store');
 const multer = require('multer');
 const jimp = require('jimp');
 const uuid = require('uuid');
+const { xss } = require('../handlers/xssHandlers');
 
 
 const multerOptions = {
@@ -50,6 +51,8 @@ exports.resize = async (req, res, next) => {
 
 exports.createStore = async (req, res) => {
   req.body.author = req.user._id;
+  req.body.name = xss(req.body.name);
+  req.body.description = xss(req.body.description);
   const store = await (new Store(req.body)).save();   
   req.flash('success',`Successfully created ${store.name}. Care to leave a review ?`);
   res.redirect(`/store/${store.slug}`);
@@ -72,7 +75,9 @@ exports.editStore = async (req, res) => {
 }
 
 exports.updateStore = async (req, res) => {
-  req.body.location.type = 'Point';  
+  req.body.location.type = 'Point';
+  req.body.name = xss(req.body.name);
+  req.body.description = xss(req.body.description);
   const store = await Store.findByIdAndUpdate({_id: req.params.id},req.body, {
     new: true,
     runValidators: true
