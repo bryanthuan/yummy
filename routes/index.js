@@ -13,7 +13,8 @@ const {
     searchStores,
     mapStores,
     mapPage,
-    heartStore
+    heartStore,
+    getHearts
 } = require('../controllers/storeController');
 
 const { 
@@ -95,4 +96,5 @@ router.get('/api/stores/near',catchErrors(mapStores));
 
 router.post('/api/stores/:id/heart', catchErrors(heartStore));
 
+router.get('/hearts', isLoggedIn, catchErrors(getHearts));
 module.exports = router;
