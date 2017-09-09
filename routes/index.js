@@ -11,7 +11,8 @@ const {
     getStoreBySlug,
     getStoresByTag,
     searchStores,
-    mapStores
+    mapStores,
+    mapPage
 } = require('../controllers/storeController');
 
 const { 
@@ -83,6 +84,7 @@ router.post('/account/reset/:token',
     catchErrors(updatePassword)
 );
 
+router.get('/map', mapPage);
 /**
  * API endpoint
  */
