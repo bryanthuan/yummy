@@ -10,7 +10,8 @@ const {
     resize,
     getStoreBySlug,
     getStoresByTag,
-    searchStores
+    searchStores,
+    mapStores
 } = require('../controllers/storeController');
 
 const { 
@@ -86,5 +87,7 @@ router.post('/account/reset/:token',
  * API endpoint
  */
 router.get('/api/v1', catchErrors(searchStores));
+
+router.get('/api/stores/near',catchErrors(mapStores));
 
 module.exports = router;
