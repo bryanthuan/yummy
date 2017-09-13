@@ -1,16 +1,17 @@
 const passport = require('passport');
 const mongoose = require('mongoose');
+
 const User = mongoose.model('User');
 const crypto = require('crypto');
 const promisify = require('es6-promisify');
 const mail = require('../handlers/mail');
 
-exports.login =  passport.authenticate('local', {
-    failureRedirect: '/login',
-    failureFlash: 'Failed Login!',
-    successRedirect: '/',
-    successFlash: 'You are now logged in!'
-});  
+exports.login = passport.authenticate('local', {
+  failureRedirect: '/login',
+  failureFlash: 'Failed Login!',
+  successRedirect: '/',
+  successFlash: 'You are now logged in!',
+});
 
 exports.logout = (req, res) => {
   req.logout();
@@ -22,10 +23,9 @@ exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  else {
-    req.flash('error','Ops!, you must loggin first !')
-    res.redirect('/login');
-  }
+
+  req.flash('error', 'Ops!, you must loggin first !');
+  res.redirect('/login');
 };
 
 exports.forgot = async (req, res) => {
@@ -45,9 +45,9 @@ exports.forgot = async (req, res) => {
     user,
     filename: 'password-reset',
     subject: 'Password Reset',
-    resetURL
+    resetURL,
   });
-  req.flash('success', `You have been emailed a password reset link.`);
+  req.flash('success', 'You have been emailed a password reset link.');
   // 4. redirect to login page
   res.redirect('/login');
 };
@@ -55,28 +55,28 @@ exports.forgot = async (req, res) => {
 exports.reset = async (req, res) => {
   const user = await User.findOne({
     resetPasswordToken: req.params.token,
-    resetPasswordExpires: { $gt: Date.now() }
+    resetPasswordExpires: { $gt: Date.now() },
   });
 
   if (!user) {
     req.flash('error', 'Passowrd reset is invalid or has expired');
     return res.redirect('/login');
   }
-  res.render('auth/reset', {title: 'Reset your password'});
+  res.render('auth/reset', { title: 'Reset your password' });
 };
 
 exports.confirmPasswords = (req, res, next) => {
-  if(req.body.password === req.body['password-confirm']) {
+  if (req.body.password === req.body['password-confirm']) {
     return next();
   }
-  req.flash('error','Password do not match!');
+  req.flash('error', 'Password do not match!');
   res.redirect('back');
 };
 
 exports.updatePassword = async (req, res) => {
   const user = await User.findOne({
     resetPasswordToken: req.params.token,
-    resetPasswordExpires: { $gt: Date.now() }
+    resetPasswordExpires: { $gt: Date.now() },
   });
 
   if (!user) {
@@ -89,6 +89,6 @@ exports.updatePassword = async (req, res) => {
   user.resetPasswordExpires = undefined;
   const updateUser = await user.save();
   await req.login(updateUser);
-  req.flash('success','Nice! Your password has been updated, you are now logged in.');
+  req.flash('success', 'Nice! Your password has been updated, you are now logged in.');
   res.redirect('/');
 };

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 mongoose.Promise = global.Promise;
 const slug = require('slugs');
 
@@ -6,52 +7,52 @@ const storeSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: 'Please enter a store name!'
+    required: 'Please enter a store name!',
   },
   slug: String,
   description: {
     type: String,
-    trim: true
+    trim: true,
   },
   tags: [String],
   created: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   location: {
     type: {
       type: String,
-      default: 'Point'
+      default: 'Point',
     },
     coordinates: [{ // [{lng, lat}] , reversed with Google
       type: Number,
-      required: 'You must supply coordinates!'
+      required: 'You must supply coordinates!',
     }],
     address: {
       type: String,
-      required: 'You must supply an address!'
-    },    
+      required: 'You must supply an address!',
+    },
   },
   photo: String,
   author: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: 'You must supply an athor'
-  }
+    required: 'You must supply an athor',
+  },
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 });
 
-// Defince indexes ♈️ 🇩🇿 
+// Defince indexes ♈️ 🇩🇿
 storeSchema.index({
   name: 'text',
-  description: 'text'
+  description: 'text',
 });
 
 storeSchema.index({ location: '2dsphere' });
 
-storeSchema.pre('save', async function(next) {
+storeSchema.pre('save', async function (next) {
   if (!this.isModified('name')) {
     next(); // skip it
     return; // stop this function from running
@@ -65,27 +66,39 @@ storeSchema.pre('save', async function(next) {
   if (storesWithSlug.length) {
     this.slug = `${this.slug}-${storesWithSlug.length + 1}`;
   }
-  
+
   next();
 });
 
-storeSchema.statics.getTagsList = function() {
+storeSchema.statics.getTagsList = function () {
   return this.aggregate([
-    { $unwind: "$tags" },
-    { $group: {
-      _id: "$tags",
-      count: { $sum: 1 }
-      }
+    { $unwind: '$tags' },
+    {
+      $group: {
+        _id: '$tags',
+        count: { $sum: 1 },
+      },
     },
-    { $sort: { count : -1} }
-  ])
+    { $sort: { count: -1 } },
+  ]);
 };
 
 // find reviews where the stores _id property === reviews store property
 storeSchema.virtual('reviews', {
   ref: 'Review', // what model to link?
   localField: '_id', // which field on the store?
-  foreignField: 'store' // which field on the review?
+  foreignField: 'store', // which field on the review?
 });
+
+storeSchema.statics.getTopStores = function () {
+  return this.aggregate([
+    // Looking up Stores and populate their reviews
+    // { $lookup: from: 'reviews', }
+    // filter for only items that have 2 or more reviews
+    // Add the average reviews field
+    // sort it by our new field, highest reviews first
+    // limit to at most 10
+  ]);
+};
 
 module.exports = mongoose.model('Store', storeSchema);

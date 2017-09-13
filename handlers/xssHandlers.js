@@ -1,12 +1,8 @@
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 
-const window = (new JSDOM('')).window;
+const { window } = (new JSDOM(''));
 const DOMPurify = createDOMPurify(window);
 
-exports.xss = dirtyHtml => {
-    if (!dirtyHtml) return;
-    let cleanText;
-    cleanText = DOMPurify.sanitize(dirtyHtml);
-    return cleanText;
-}
+exports.xss = dirtyHtml => ((!dirtyHtml) ? null : DOMPurify.sanitize(dirtyHtml));
+
