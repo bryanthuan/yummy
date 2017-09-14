@@ -44,6 +44,7 @@ const { catchErrors } = require('../handlers/errorHandlers');
 
 router.get('/', catchErrors(getStores));
 router.get('/stores', catchErrors(getStores));
+router.get('/stores/page/:page', catchErrors(getStores));
 
 router.get('/add', isLoggedIn, addStore);
 
